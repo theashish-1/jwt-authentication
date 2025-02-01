@@ -14,7 +14,9 @@ public class CrudOpearationsApplication implements CommandLineRunner {
 	@Autowired
 	DataSource dataSource;
 	public static void main(String[] args) {
+		System.out.println("Inside main");
 		SpringApplication.run(CrudOpearationsApplication.class, args);
+		System.out.println("next line of main");
 	}
 
 	@Override

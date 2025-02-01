@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter { // ✅ Extend OncePerRequestFilter
+public class JwtAuthenticationFilter extends OncePerRequestFilter { // Extend OncePerRequestFilter
 
     private final JwtUtil jwtUtil;
 
@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // ✅ Exten
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
