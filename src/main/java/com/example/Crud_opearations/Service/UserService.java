@@ -47,7 +47,7 @@ public class UserService {
         savedUserDTO.setLastName(savedUser.getLastName());
         savedUserDTO.setEmail(savedUser.getEmail());
         savedUserDTO.setAdmin(savedUser.isAdmin());
-//        savedUserDTO.setPassword(savedUser.getPassword());
+        savedUserDTO.setPassword(savedUser.getPassword());
         return savedUserDTO;
 
     }

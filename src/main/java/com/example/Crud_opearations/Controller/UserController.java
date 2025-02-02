@@ -65,7 +65,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/auth")
-@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -118,13 +118,15 @@ public class UserController {
 
     @PostMapping("register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO user){
+        System.out.println("admin value is "+user.isAdmin());
         UserDTO addedEmployee =  userService.registerUser(user);
         return ResponseEntity.ok(addedEmployee);
     }
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody UserDTO user){
         //after verifying username and password it generates a token that is done by below code ie. Authentication
         boolean isAdmin = user.isAdmin();
+        System.out.println("admin value inside login is "+user.isAdmin());
 
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
