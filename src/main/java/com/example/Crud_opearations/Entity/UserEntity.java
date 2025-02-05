@@ -22,14 +22,23 @@ public class UserEntity {
     private String password;
 
     @Column(name = "IsAdmin",nullable = false)
-    private boolean isAdmin;
+    private boolean admin;
+
+//    public boolean isAdmin() {
+//        return isAdmin;
+//    }
+//
+//    public void setAdmin(boolean admin) {
+//        isAdmin = admin;
+//    }
+
 
     public boolean isAdmin() {
-        return isAdmin;
+        return admin;
     }
 
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
     }
 
     public Integer getId() {

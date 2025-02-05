@@ -64,8 +64,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+//@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("api/auth")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200",allowedHeaders = "Authorization ,Content-Type" , allowCredentials = "true")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -118,29 +120,83 @@ public class UserController {
 
     @PostMapping("register")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO user){
-        System.out.println("admin value is "+user.isAdmin());
+        System.out.println("admin value is "+user.getAdmin());
+
         UserDTO addedEmployee =  userService.registerUser(user);
         return ResponseEntity.ok(addedEmployee);
     }
-    @PostMapping("/login")
+//    @PostMapping("login")
+//    public ResponseEntity<AuthResponse> login(@RequestBody UserDTO user){
+//        //after verifying username and password it generates a token that is done by below code ie. Authentication
+//        boolean isAdmin = user.getAdmin();
+//        System.out.println("admin value inside login is "+user.getAdmin());
+//
+//        Authentication authentication = authenticationManager
+//                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
+//                    // Generate JWT token
+//            String token = jwtUtil.generateToken(user.getEmail());
+//            System.out.println("token is "+token);
+//
+//
+//            logger.info("User {} logged in successfully", user.getEmail());
+//        if (authentication.isAuthenticated()){
+//            return ResponseEntity.ok(new AuthResponse("User Login Successfully done", isAdmin,token));
+//        }else{
+//            return ResponseEntity.ok(new AuthResponse("Invalid Credentials" , isAdmin , token));
+//        }
+//    }
+
+
+
+
+//    @PostMapping("login")
+//    public ResponseEntity<AuthResponse> login(@RequestBody UserDTO user) {
+//        try {
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+//            );
+//
+//            // If authentication succeeds generate the JWT
+//            String token = jwtUtil.generateToken(user.getEmail());
+//
+//            logger.info("User {} logged in successfully", user.getEmail());
+//
+//            return ResponseEntity.ok(new AuthResponse("User Login Successfully done", user.getAdmin(), token));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(401).body(new AuthResponse("Invalid Credentials", user.getAdmin(), null));
+//        }
+//    }
+
+
+
+
+    @PostMapping("login")
     public ResponseEntity<AuthResponse> login(@RequestBody UserDTO user){
-        //after verifying username and password it generates a token that is done by below code ie. Authentication
-        boolean isAdmin = user.isAdmin();
-        System.out.println("admin value inside login is "+user.isAdmin());
+        System.out.println("Email received: " + user.getEmail());
 
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
-                    // Generate JWT token
-            String token = jwtUtil.generateToken(user.getEmail());
+        UserEntity dbUser = userService.findUserByEmail(user.getEmail()); // Fetch from DB
+        if (dbUser == null) {
+            return ResponseEntity.status(401).body(new AuthResponse("Invalid Credentials", false, null));
+        }
 
+        System.out.println("Admin value from DB: " + dbUser.isAdmin());
 
-            logger.info("User {} logged in successfully", user.getEmail());
-        if (authentication.isAuthenticated()){
-            return ResponseEntity.ok(new AuthResponse("User Login Successfully done", isAdmin,token));
-        }else{
-            return ResponseEntity.ok(new AuthResponse("Invalid Credentials" , isAdmin , token));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+
+        // Generate JWT token
+        String token = jwtUtil.generateToken(user.getEmail());
+        System.out.println("Generated Token: " + token);
+
+        if (authentication.isAuthenticated()) {
+            //String token = jwtUtil.generateToken(user.getEmail());
+            return ResponseEntity.ok(new AuthResponse("User Login Successfully done", dbUser.isAdmin(), token));
+        } else {
+            return ResponseEntity.ok(new AuthResponse("Invalid Credentials", false, token));
         }
     }
+
+
 
     @GetMapping("hello")
     public String greet(){

@@ -5,14 +5,14 @@ public class UserDTO {
     private String LastName;
     private String email;
     private String password;
-    private boolean isAdmin;
+    private boolean admin;
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public boolean getAdmin() {
+        return admin;
     }
 
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
     }
 
     public String getFirstName() {
